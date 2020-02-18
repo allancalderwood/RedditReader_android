@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBackground"
+    android:paddingVertical="50dp"
+    android:textAlignment="center"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="175dp"
+        android:contentDescription="@string/app_name"
+        app:srcCompat="@drawable/ic_logo" />
+
+    <TextView
+        android:id="@+id/appName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="5dp"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textColorHighlight="#00FFFFFF"
+        android:textSize="24sp" />
+
+    <EditText
+        android:id="@+id/editTextUsername"
+        android:layout_width="325dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:background="@layout/rounded_border_edittext"
+        android:ems="10"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        android:padding="10dp"
+        android:textColor="@color/colorBackground"
+        android:textColorHint="#9C9C9C"
+        android:textSize="24sp" />
+
+    <EditText
+        android:id="@+id/editTextEmail"
+        android:layout_width="325dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:background="@layout/rounded_border_edittext"
+        android:hint="Email"
+        android:padding="10dp"
+        android:textColor="@color/colorBackground"
+        android:textColorHint="#9C9C9C"
+        android:ems="10"
+        android:textSize="24sp"
+        android:inputType="textEmailAddress"
+        />
+
+    <EditText
+        android:id="@+id/textFieldPassword"
+        android:layout_width="325dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:background="@layout/rounded_border_edittext"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textColor="@color/colorBackground"
+        android:textColorHint="#9C9C9C"
+        android:textSize="24sp" />
+
+    <EditText
+        android:id="@+id/textFieldPasswordConfirm"
+        android:layout_width="325dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:background="@layout/rounded_border_edittext"
+        android:ems="10"
+        android:hint="ConfirmPassword"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textColor="@color/colorBackground"
+        android:textColorHint="#9C9C9C"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/buttonRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:padding="5dp"
+        android:background="@layout/rounded_button"
+        android:contentDescription="Register"
+        android:text="Register"
+        android:textAllCaps="false"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:background="@android:color/transparent"
+        android:padding="0dp"
+        android:text="Go Back?"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/colorContrast" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
