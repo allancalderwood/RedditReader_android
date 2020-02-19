@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_login);
-        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
 
 
         buttonLogin = findViewById(R.id.buttonLogin);

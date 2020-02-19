@@ -11,10 +11,12 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 
 public class RegisterActivity extends AppCompatActivity {
     private WebView webView;
-    private Button buttonBack;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,19 +26,18 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
 
-       // buttonBack = findViewById(R.id.buttonBack);
+        fab = findViewById(R.id.fab);
         webView = findViewById(R.id.webView);
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl("https://www.reddit.com/register/");
 
-       /* buttonBack.setOnClickListener(new View.OnClickListener(){
+       fab.setOnClickListener(new View.OnClickListener(){
             @Override
              public void onClick(View v){
                 Intent intent = new Intent(v.getContext(), MainActivity.class);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                 startActivity(intent);
             }
-         });*/
+         });
     }
 
 }
