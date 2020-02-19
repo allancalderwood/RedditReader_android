@@ -7,12 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 
 
 public class MainActivity extends AppCompatActivity {
-    private EditText editTextUsername;
-    private EditText textFieldPassword;
     private Button buttonLogin;
     private Button buttonRegister;
 
@@ -24,9 +21,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_left);
 
-        editTextUsername = findViewById(R.id.editTextUsername);
-        textFieldPassword = findViewById(R.id.textFieldPassword);
-        buttonLogin = findViewById(R.id.buttonRegister);
+
+        buttonLogin = findViewById(R.id.buttonLogin);
         buttonRegister = findViewById(R.id.buttonRegister);
 
         buttonLogin.setOnClickListener(new View.OnClickListener(){

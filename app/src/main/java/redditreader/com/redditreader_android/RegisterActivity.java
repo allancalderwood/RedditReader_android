@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -11,10 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 public class RegisterActivity extends AppCompatActivity {
-    private EditText editTextUsername;
-    private EditText textFieldPassword;
-    private Button buttonLogin;
-    private Button buttonRegister;
+    private WebView webView;
     private Button buttonBack;
 
     @Override
@@ -25,28 +24,19 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
 
-        buttonBack = findViewById(R.id.buttonBack);
+       // buttonBack = findViewById(R.id.buttonBack);
+        webView = findViewById(R.id.webView);
+        webView.setWebViewClient(new WebViewClient());
+        webView.loadUrl("https://www.reddit.com/register/");
 
-        //editTextUsername = findViewById(R.id.editTextUsername);
-        //textFieldPassword = findViewById(R.id.textFieldPassword);
-        //buttonLogin = findViewById(R.id.buttonRegister);
-       // buttonRegister = findViewById(R.id.buttonRegister);
-
-        //buttonRegister.setOnClickListener(new View.OnClickListener(){
-            //@Override
-           // public void onClick(View v){
-                // TODO code to go to register page
-          //  }
-       // });
-
-        buttonBack.setOnClickListener(new View.OnClickListener(){
+       /* buttonBack.setOnClickListener(new View.OnClickListener(){
             @Override
              public void onClick(View v){
                 Intent intent = new Intent(v.getContext(), MainActivity.class);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                 startActivity(intent);
             }
-         });
+         });*/
     }
 
 }

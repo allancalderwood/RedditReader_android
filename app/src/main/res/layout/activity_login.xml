@@ -28,42 +28,12 @@
         android:textColorHighlight="#00FFFFFF"
         android:textSize="24sp" />
 
-    <EditText
-        android:id="@+id/editTextUsername"
-        android:layout_width="325dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
-        android:background="@layout/rounded_border_edittext"
-        android:ems="10"
-        android:hint="Username"
-        android:inputType="textPersonName"
-        android:padding="10dp"
-        android:textColor="@color/colorBackground"
-        android:textColorHint="#9C9C9C"
-        android:textSize="24sp" />
-
-    <EditText
-        android:id="@+id/textFieldPassword"
-        android:layout_width="325dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:background="@layout/rounded_border_edittext"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:padding="10dp"
-        android:textColor="@color/colorBackground"
-        android:textColorHint="#9C9C9C"
-        android:textSize="24sp" />
-
     <Button
         android:id="@+id/buttonLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="75dp"
         android:background="@layout/rounded_button"
         android:contentDescription="Login"
         android:text="Login"
