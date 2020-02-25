@@ -8,11 +8,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.json.JSONObject;
-
 import redditreader.com.redditreader_android.MainActivity;
 import redditreader.com.redditreader_android.R;
-import redditreader.com.redditreader_android.utils.redditAPI;
+import redditreader.com.redditreader_android.utils.RedditAPI;
 
 public class AuthActivity extends AppCompatActivity{
     private WebView webView;
@@ -30,7 +28,7 @@ public class AuthActivity extends AppCompatActivity{
         client = new WebViewClient(){
             @Override
             public void onPageStarted(WebView view,String url, Bitmap favicon) {
-                if(url.startsWith(redditAPI.getRedirectURI())){
+                if(url.startsWith(RedditAPI.getRedirectURI())){
                     if(url.contains("access_denied")){
                         Intent intent = new Intent(view.getContext(), MainActivity.class);
                         startActivity(intent);
@@ -41,10 +39,10 @@ public class AuthActivity extends AppCompatActivity{
                                 );
 
                         // retrieve access token and refresh token and store them
-                        redditAPI.getAccessToken(_code, getApplicationContext());
+                        RedditAPI.getAccessToken(_code);
                         getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
-
-                       // getAccessToken(_code).then((value) => writeTokensStorage(value));
+                        Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
+                        startActivity(intent);
                     }
                 }
                 super.onPageStarted(view, url, favicon);
@@ -52,7 +50,7 @@ public class AuthActivity extends AppCompatActivity{
         };
 
         webView.setWebViewClient(client);
-        webView.loadUrl(new redditAPI().authorizeURL());
+        webView.loadUrl(new RedditAPI().authorizeURL());
 
     }
 

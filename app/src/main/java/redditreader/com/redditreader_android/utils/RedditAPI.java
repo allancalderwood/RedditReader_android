@@ -5,12 +5,13 @@ import android.content.SharedPreferences;
 import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.util.Base64;
+import java.util.function.Function;
 
 import redditreader.com.redditreader_android.MainActivity;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class redditAPI {
+public class RedditAPI {
     final  static String authBaseURL = "https://www.reddit.com/api/v1/authorize.compact?";
     final  static String _clientID = "q0_ONlYdebK_MQ";
     final  static String redirectURI = "https://www.reddit.com/user/AllanCalderwood/";
@@ -19,9 +20,13 @@ public class redditAPI {
     final  static String tokenBaseURL = "https://www.reddit.com/api/v1/access_token";
     final  static String _userAgent = "android:com.redditreader.redditreader_android:v.1 (by /u/AllanCalderwood)";
     final  static String credentials = Base64.getEncoder().encodeToString((_clientID+":").getBytes());
+    final  static String callBaseURL = "https://oauth.reddit.com/";
 
     private static HttpURLConnection connection;
 
+    public static String getCallBaseURL() {
+        return callBaseURL;
+    }
     public static String getRedirectURI() {
         return redirectURI;
     }
@@ -52,8 +57,7 @@ public class redditAPI {
         return _state;
     }
 
-    public static void getAccessToken(String codes, Context context){
-        final Context c = context;
+    public static void getAccessToken(String codes){
         String fields =
                 "grant_type=authorization_code&"
                 +"code="+codes+"&"+
@@ -65,7 +69,7 @@ public class redditAPI {
                 try{
                     JSONObject jo = new JSONObject( response[1] );
                     // TODO store tokens locally
-                    SharedPreferences sharedPreferences = c.getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = MainActivity.getContext().getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
                     sharedPreferences.edit().putString("access_token",jo.getString("access_token")).apply();
                     sharedPreferences.edit().putString("refresh_token",jo.getString("refresh_token")).apply();
                 }catch (Exception e){
@@ -73,6 +77,50 @@ public class redditAPI {
                 }
             }
         });
-        pr.execute(tokenBaseURL, fields);
+        pr.execute(tokenBaseURL, fields, "Basic");
+    }
+
+    public static void refreshToken(){
+        SharedPreferences sharedPreferences = MainActivity.getContext().getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+        String refreshToken = sharedPreferences.getString("refresh_token","");
+        String fields =
+                "grant_type=refresh_token&"
+                        +"refresh_token="+refreshToken;
+        PostRequest pr = new PostRequest(new AsyncResponse() {
+            @Override
+            public void processFinish(Object output) {
+                String[] response = (String[]) output;
+                try{
+                    JSONObject jo = new JSONObject( response[1] );
+                    // TODO store tokens locally
+                    SharedPreferences sharedPreferences = MainActivity.getContext().getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+                    sharedPreferences.edit().putString("access_token",jo.getString("access_token")).apply();
+                }catch (Exception e){
+                    System.err.println(e.getLocalizedMessage());
+                }
+            }
+        });
+        pr.execute(tokenBaseURL, fields, "Basic");
+    }
+
+    public static void refreshToken(final Context context){
+        final SharedPreferences sharedPreferences = context.getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+        String refreshToken = sharedPreferences.getString("refresh_token","");
+        String fields =
+                "grant_type=refresh_token&"
+                        +"refresh_token="+refreshToken;
+        PostRequest pr = new PostRequest(new AsyncResponse() {
+            @Override
+            public void processFinish(Object output) {
+                String[] response = (String[]) output;
+                try{
+                    JSONObject jo = new JSONObject( response[1] );
+                    sharedPreferences.edit().putString("access_token",jo.getString("access_token")).apply();
+                }catch (Exception e){
+                    System.err.println(e.getLocalizedMessage());
+                }
+            }
+        });
+        pr.execute(tokenBaseURL, fields, "Basic");
     }
 }
