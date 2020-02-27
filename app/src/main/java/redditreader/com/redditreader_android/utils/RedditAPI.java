@@ -8,6 +8,7 @@ import java.util.Base64;
 import java.util.function.Function;
 
 import redditreader.com.redditreader_android.MainActivity;
+import redditreader.com.redditreader_android.models.User;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -58,6 +59,7 @@ public class RedditAPI {
     }
 
     public static void getAccessToken(String codes){
+        final SharedPreferences sharedPreferences = MainActivity.getContext().getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
         String fields =
                 "grant_type=authorization_code&"
                 +"code="+codes+"&"+
@@ -68,8 +70,6 @@ public class RedditAPI {
                 String[] response = (String[]) output;
                 try{
                     JSONObject jo = new JSONObject( response[1] );
-                    // TODO store tokens locally
-                    SharedPreferences sharedPreferences = MainActivity.getContext().getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
                     sharedPreferences.edit().putString("access_token",jo.getString("access_token")).apply();
                     sharedPreferences.edit().putString("refresh_token",jo.getString("refresh_token")).apply();
                 }catch (Exception e){
@@ -78,6 +78,7 @@ public class RedditAPI {
             }
         });
         pr.execute(tokenBaseURL, fields, "Basic");
+        updateUser(sharedPreferences);
     }
 
     public static void refreshToken(){
@@ -101,6 +102,7 @@ public class RedditAPI {
             }
         });
         pr.execute(tokenBaseURL, fields, "Basic");
+        updateUser(sharedPreferences);
     }
 
     public static void refreshToken(final Context context){
@@ -122,5 +124,47 @@ public class RedditAPI {
             }
         });
         pr.execute(tokenBaseURL, fields, "Basic");
+        updateUser(sharedPreferences);
+    }
+
+    public static void updateUser(SharedPreferences sharedPreferences){
+        // Get user details
+        GetRequest gr = new GetRequest(new AsyncResponse() {
+            @Override
+            public void processFinish(Object output) {
+                String[] response = (String[]) output;
+                try{
+                    JSONObject jo = new JSONObject( response[1] );
+                    User.setUsername(jo.getString("name"));
+                    User.setKarma(((jo.getInt("link_karma") + jo.getInt("comment_karma") )));
+                    long seconds = jo.getLong("created")/10;
+                    Long daysSinceCreated = seconds/86400;
+                    Double age;
+                    String message = " days old";
+
+
+                    if(daysSinceCreated>30 && daysSinceCreated<365){
+                        daysSinceCreated =  daysSinceCreated/30;
+                        age = Math.floor(daysSinceCreated.doubleValue());
+                        message = " mnths old";
+                    }
+                    else if(daysSinceCreated>365){
+                        daysSinceCreated =  daysSinceCreated/365;
+                        age = Math.floor(daysSinceCreated.doubleValue());
+                        message = " yr old";
+                    }else{
+                        age = daysSinceCreated.doubleValue();
+                    }
+                    User.setAccountAge((age.intValue()));
+                    User.setAccountAgePostfix(message);
+                    User.setProfileURL(jo.getString("icon_img"));
+                    User.storeUser();
+                }catch (Exception e){
+                    System.err.println(e.getLocalizedMessage());
+                }
+            }
+        });
+        String auth = sharedPreferences.getString("access_token","");
+        gr.execute(RedditAPI.getCallBaseURL()+"api/v1/me", "Bearer", auth);
     }
 }

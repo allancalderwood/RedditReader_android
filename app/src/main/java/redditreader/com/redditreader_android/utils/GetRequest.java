@@ -70,6 +70,7 @@ public class GetRequest extends AsyncTask<String, String, String[]>{
 
         } catch (FileNotFoundException e){
             // TODO refresh token
+            //RedditAPI.refreshToken();
             e.printStackTrace();
         } catch (IOException e){
             e.printStackTrace();

@@ -19,21 +19,81 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorBackground"
-            app:title=""
+            android:elevation="0dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            android:elevation="0dp">
+            app:title="">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_logo"
-                android:layout_gravity="end"/>
+                android:layout_gravity="end"
+                android:src="@drawable/ic_logo" />
 
         </androidx.appcompat.widget.Toolbar>
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="30dp">
+
+            <Button
+                android:id="@+id/buttonHomepage"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:background="@color/colorBackground"
+                android:text="Homepage"
+                android:textAllCaps="false"
+                android:textSize="35dp" />
+
+            <Button
+                android:id="@+id/buttonPopular"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorBackground"
+                android:text="Popular"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="25dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+            <EditText
+                android:drawableLeft="@drawable/ic_search"
+                android:id="@+id/searchText"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="9"
+                android:layout_marginVertical="15dp"
+                android:layout_gravity="center"
+                android:ems="10"
+                android:background="@drawable/rounded_input_dark"
+                android:inputType="textPersonName"
+                android:padding="8dp"
+                android:textColor="@color/colorContrastLight"
+                android:hint="Search..." />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/postViewLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"></LinearLayout>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

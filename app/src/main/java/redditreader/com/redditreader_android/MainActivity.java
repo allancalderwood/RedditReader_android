@@ -4,11 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import redditreader.com.redditreader_android.models.User;
 import redditreader.com.redditreader_android.screens.AuthActivity;
 import redditreader.com.redditreader_android.screens.HomepageActivity;
 import redditreader.com.redditreader_android.screens.RegisterActivity;
@@ -29,11 +29,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
+        context = getApplicationContext();
         String auth = getApplicationContext().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE).getString("access_token","");
         if( !(auth.equals(""))) { //if logged in
+            User.retrieveUser();
+            RedditAPI.refreshToken(getApplicationContext());
             Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
             startActivity(intent);
-            RedditAPI.refreshToken(getApplicationContext());
         }
         else{
             setContentView(R.layout.activity_login);
