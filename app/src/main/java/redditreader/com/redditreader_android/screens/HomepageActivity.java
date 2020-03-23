@@ -6,6 +6,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import redditreader.com.redditreader_android.MainActivity;
 import redditreader.com.redditreader_android.R;
+import redditreader.com.redditreader_android.models.Post;
 import redditreader.com.redditreader_android.models.User;
 import redditreader.com.redditreader_android.utils.AsyncResponse;
 import redditreader.com.redditreader_android.utils.DownloadImageTask;
@@ -23,6 +24,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.android.material.navigation.NavigationView;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static redditreader.com.redditreader_android.utils.PostFactory.postFact;
 
 public class HomepageActivity extends AppCompatActivity {
     private DrawerLayout drawer;
@@ -108,7 +114,37 @@ public class HomepageActivity extends AppCompatActivity {
     }
 
     private void loadHomepage(){
-        //TODO load homepage posts
+        GetRequest gr = new GetRequest(new AsyncResponse() {
+            @Override
+            public void processFinish(Object output) {
+                String[] response = (String[]) output;
+                try{
+                    ArrayList<Post> posts = new ArrayList<>(); 
+                    JSONObject jo = new JSONObject( response[1] );
+                    if(jo.has("message")){
+                        if(jo.getString("message").equals("Unauthorized")){
+                            RedditAPI.refreshToken();
+                            loadHomepage();
+                        }else{
+                            TextView t = new TextView(getApplicationContext());
+                            t.setText("Error");
+                            postViewLayout.addView(t);
+                        }
+                    }else {
+                       postFact(jo, posts);
+                       for(Post p: posts){
+                           TextView t = new TextView(getApplicationContext());
+                           t.setText(p.getTitle());
+                           postViewLayout.addView(t);
+                       }
+                    }
+                }catch (Exception e){
+                    System.err.println(e.getLocalizedMessage());
+                }
+            }
+        });
+        String auth = getApplicationContext().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE).getString("access_token","");
+        gr.execute(RedditAPI.getCallBaseURL()+"/best?limit=500", "Bearer", auth);
     }
 
     private void loadPopular(){

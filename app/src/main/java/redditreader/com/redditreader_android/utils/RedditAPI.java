@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.util.Base64;
-import java.util.function.Function;
 
 import redditreader.com.redditreader_android.MainActivity;
 import redditreader.com.redditreader_android.models.User;

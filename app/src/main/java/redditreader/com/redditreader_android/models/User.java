@@ -1,8 +1,6 @@
 package redditreader.com.redditreader_android.models;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 
 import redditreader.com.redditreader_android.MainActivity;
 
