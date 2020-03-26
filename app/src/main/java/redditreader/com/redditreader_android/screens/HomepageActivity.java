@@ -12,6 +12,8 @@ import redditreader.com.redditreader_android.utils.AsyncResponse;
 import redditreader.com.redditreader_android.utils.DownloadImageTask;
 import redditreader.com.redditreader_android.utils.GetRequest;
 import redditreader.com.redditreader_android.utils.RedditAPI;
+import redditreader.com.redditreader_android.widgets.PostListAdapter;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -20,13 +22,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.google.android.material.navigation.NavigationView;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static redditreader.com.redditreader_android.utils.PostFactory.postFact;
 
@@ -36,7 +38,8 @@ public class HomepageActivity extends AppCompatActivity {
     Button homepageButton;
     Button popularButton;
     EditText searchText;
-    LinearLayout postViewLayout;
+    ListView postList;
+    ProgressBar progressBar;
     boolean homeSection =true;
     boolean popularSection =false;
 
@@ -62,7 +65,8 @@ public class HomepageActivity extends AppCompatActivity {
 
         homepageButton = findViewById(R.id.buttonHomepage);
         popularButton = findViewById(R.id.buttonPopular);
-        postViewLayout = findViewById(R.id.postViewLayout);
+        postList = findViewById(R.id.postList);
+        progressBar = findViewById(R.id.loadingProgress);
         searchText = findViewById(R.id.searchText);
         loadHomepage();
         searchText.setOnClickListener(new View.OnClickListener(){
@@ -104,22 +108,15 @@ public class HomepageActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed(){
-        if(drawer.isDrawerOpen(GravityCompat.START)){
-            drawer.closeDrawer(GravityCompat.START);
-        }else{
-            super.onBackPressed();
-        }
-    }
-
     private void loadHomepage(){
+        progressBar.setVisibility(View.VISIBLE);
+        postList.setVisibility(View.GONE);
         GetRequest gr = new GetRequest(new AsyncResponse() {
             @Override
             public void processFinish(Object output) {
                 String[] response = (String[]) output;
                 try{
-                    ArrayList<Post> posts = new ArrayList<>(); 
+                    ArrayList<Post> posts = new ArrayList<>();
                     JSONObject jo = new JSONObject( response[1] );
                     if(jo.has("message")){
                         if(jo.getString("message").equals("Unauthorized")){
@@ -127,16 +124,17 @@ public class HomepageActivity extends AppCompatActivity {
                             loadHomepage();
                         }else{
                             TextView t = new TextView(getApplicationContext());
-                            t.setText("Error");
-                            postViewLayout.addView(t);
+                            t.setText("Error loading posts.");
+                            postList.addView(t);
+                            progressBar.setVisibility(View.GONE);
+                            postList.setVisibility(View.VISIBLE);
                         }
                     }else {
                        postFact(jo, posts);
-                       for(Post p: posts){
-                           TextView t = new TextView(getApplicationContext());
-                           t.setText(p.getTitle());
-                           postViewLayout.addView(t);
-                       }
+                       PostListAdapter adapter = new PostListAdapter(HomepageActivity.this, R.layout.post_layout, posts);
+                       postList.setAdapter(adapter);
+                       progressBar.setVisibility(View.GONE);
+                       postList.setVisibility(View.VISIBLE);
                     }
                 }catch (Exception e){
                     System.err.println(e.getLocalizedMessage());
@@ -148,9 +146,43 @@ public class HomepageActivity extends AppCompatActivity {
     }
 
     private void loadPopular(){
-        //TODO load homepage posts
+        progressBar.setVisibility(View.VISIBLE);
+        postList.setVisibility(View.GONE);
+        GetRequest gr = new GetRequest(new AsyncResponse() {
+            @Override
+            public void processFinish(Object output) {
+                String[] response = (String[]) output;
+                try{
+                    ArrayList<Post> posts = new ArrayList<>();
+                    JSONObject jo = new JSONObject( response[1] );
+                    if(jo.has("message")){
+                        if(jo.getString("message").equals("Unauthorized")){
+                            RedditAPI.refreshToken();
+                            loadHomepage();
+                        }else{
+                            TextView t = new TextView(getApplicationContext());
+                            t.setText("Error loading posts.");
+                            postList.addView(t);
+                            progressBar.setVisibility(View.GONE);
+                            postList.setVisibility(View.VISIBLE);
+                        }
+                    }else {
+                        postFact(jo, posts);
+                        PostListAdapter adapter = new PostListAdapter(HomepageActivity.this, R.layout.post_layout, posts);
+                        postList.setAdapter(adapter);
+                        progressBar.setVisibility(View.GONE);
+                        postList.setVisibility(View.VISIBLE);
+                    }
+                }catch (Exception e){
+                    System.err.println(e.getLocalizedMessage());
+                }
+            }
+        });
+        String auth = getApplicationContext().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE).getString("access_token","");
+        gr.execute(RedditAPI.getCallBaseURL()+"/r/all?limit=500", "Bearer", auth);
     }
 
+    /////////////////////////// DRAWER METHODS /////////////////////////////////////////
     private void updateDrawer(){
         View headerView = drawerView.getHeaderView(0);
         final TextView usernameText = headerView.findViewById(R.id.usernameText);
@@ -204,4 +236,14 @@ public class HomepageActivity extends AppCompatActivity {
         new DownloadImageTask(userImage).execute(User.getProfileURL());
     }
     }
+
+    @Override
+    public void onBackPressed(){
+        if(drawer.isDrawerOpen(GravityCompat.START)){
+            drawer.closeDrawer(GravityCompat.START);
+        }else{
+            super.onBackPressed();
+        }
+    }
+
 }
