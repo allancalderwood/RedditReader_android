@@ -20,11 +20,22 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.chip.Chip;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
+import redditreader.com.redditreader_android.MainActivity;
 import redditreader.com.redditreader_android.R;
 import redditreader.com.redditreader_android.models.Post;
+import redditreader.com.redditreader_android.models.User;
+import redditreader.com.redditreader_android.screens.HomepageActivity;
+import redditreader.com.redditreader_android.screens.ProfileActivity;
+import redditreader.com.redditreader_android.utils.AsyncResponse;
+import redditreader.com.redditreader_android.utils.GetRequest;
 import redditreader.com.redditreader_android.utils.RedditAPI;
+
+import static redditreader.com.redditreader_android.utils.PostFactory.postFact;
 
 public class PostListAdapter extends ArrayAdapter<Post> {
     private static final String TAG = "CustomPostAdapter";
@@ -69,7 +80,7 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         String previewUrl = getItem(position).getImageURLPreview();
         final int karma = getItem(position).getScore();
         int numComments = getItem(position).getNumComments();
-        String author = getItem(position).getAuthorName();
+        final String author = getItem(position).getAuthorName();
         final String link = getItem(position).getUrl();
         final ViewHolder holder;
         if(convertView==null){
@@ -112,6 +123,12 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         holder.karma.setText(karma+" pts");
         holder.comments.setText(numComments+" comments");
         holder.author.setText(author);
+        holder.author.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToUser(author);
+            }
+        });
         holder.upvote.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -192,6 +209,53 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         });
 
         return convertView;
+    }
+
+    private void goToUser(final String username){
+        GetRequest gr = new GetRequest(new AsyncResponse() {
+            @Override
+            public void processFinish(Object output) {
+                String[] response = (String[]) output;
+                try{
+                    JSONObject jo = new JSONObject( response[1] );
+                    if(jo.has("message")){
+                        if(jo.getString("message").equals("Unauthorized")){
+                            RedditAPI.refreshToken();
+                            goToUser(username);
+                        }
+                    }else {
+                        JSONObject userData = jo.getJSONObject("data");
+                        long seconds = userData.getLong("created")/10;
+                        Long daysSinceCreated = seconds/86400;
+                        Double age;
+                        String message = " days old";
+                        if(daysSinceCreated>30 && daysSinceCreated<365){
+                            daysSinceCreated =  daysSinceCreated/30;
+                            age = Math.floor(daysSinceCreated.doubleValue());
+                            message = " mnths old";
+                        }
+                        else if(daysSinceCreated>365){
+                            daysSinceCreated =  daysSinceCreated/365;
+                            age = Math.floor(daysSinceCreated.doubleValue());
+                            message = " yr old";
+                        }else{
+                            age = daysSinceCreated.doubleValue();
+                        }
+
+                        Intent intent = new Intent(context, ProfileActivity.class);
+                        intent.putExtra("username", userData.getString("name"));
+                        intent.putExtra("profileURL", userData.getString("icon_img"));
+                        intent.putExtra("age", (age.intValue()+message));
+                        intent.putExtra("karma", (userData.getInt("link_karma")+userData.getInt("comment_karma")));
+                        context.startActivity(intent);
+                    }
+                }catch (Exception e){
+                    System.err.println(e.getLocalizedMessage());
+                }
+            }
+        });
+        String auth = context.getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE).getString("access_token","");
+        gr.execute(RedditAPI.getCallBaseURL()+"/user/"+username+"/about.json", "Bearer", auth);
     }
 
 

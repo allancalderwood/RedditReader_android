@@ -38,7 +38,6 @@ public class DrawerView {
                     String[] response = (String[]) output;
                     try{
                         JSONObject jo = new JSONObject( response[1] );
-                        System.out.println("RESPONSE: "+response[1]);
                         usernameText.setText(jo.getString("name"));
                         karmaText.setText(( String.valueOf(jo.getInt("link_karma") + jo.getInt("comment_karma")) ));
                         long seconds = jo.getLong("created")/10;
