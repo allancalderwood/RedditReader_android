@@ -16,6 +16,7 @@ import redditreader.com.redditreader_android.MainActivity;
 import redditreader.com.redditreader_android.R;
 import redditreader.com.redditreader_android.models.User;
 import redditreader.com.redditreader_android.screens.ProfileActivity;
+import redditreader.com.redditreader_android.screens.SavedActivity;
 import redditreader.com.redditreader_android.utils.AsyncResponse;
 import redditreader.com.redditreader_android.utils.GetRequest;
 import redditreader.com.redditreader_android.utils.RedditAPI;
@@ -76,7 +77,6 @@ public class DrawerView {
         drawerView.getMenu().getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                System.out.println("VIEW PROFILE!!!!!!!!!!!!!!!!!");
                 Intent intent = new Intent(context, ProfileActivity.class);
                 intent.putExtra("username", User.getUsername());
                 intent.putExtra("profileURL", User.getProfileURL());
@@ -96,7 +96,8 @@ public class DrawerView {
         drawerView.getMenu().getItem(2).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                System.out.println("VIEW SAVED!!!!!!!!!!!!!!!!!");
+                Intent intent = new Intent(context, SavedActivity.class);
+                context.startActivity(intent);
                 return true;
             }
         });

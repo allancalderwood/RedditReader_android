@@ -23,6 +23,7 @@
         <activity android:name=".screens.RegisterActivity" />
         <activity android:name=".screens.AuthActivity" />
         <activity android:name=".screens.HomepageActivity" />
+        <activity android:name=".screens.SavedActivity" />
     </application>
 
 </manifest>
