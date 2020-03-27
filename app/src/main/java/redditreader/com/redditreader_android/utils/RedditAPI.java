@@ -3,6 +3,8 @@ package redditreader.com.redditreader_android.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.Base64;
 
@@ -92,7 +94,6 @@ public class RedditAPI {
                 String[] response = (String[]) output;
                 try{
                     JSONObject jo = new JSONObject( response[1] );
-                    // TODO store tokens locally
                     SharedPreferences sharedPreferences = MainActivity.getContext().getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
                     sharedPreferences.edit().putString("access_token",jo.getString("access_token")).apply();
                 }catch (Exception e){
@@ -165,5 +166,73 @@ public class RedditAPI {
         });
         String auth = sharedPreferences.getString("access_token","");
         gr.execute(RedditAPI.getCallBaseURL()+"api/v1/me", "Bearer", auth);
+    }
+
+    public static void logOutUser(){
+        try{
+            byte[] bytes = _clientID.getBytes("UTF8");
+            String credentials = Base64.getEncoder().encodeToString(bytes);
+            String body = "token="+User.getToken()+"&token_type_hint=access_token";
+            Context context = MainActivity.getContext();
+            final SharedPreferences sharedPreferences = context.getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+            String rToken = sharedPreferences.getString("refresh_token","");
+            String body2 = "token="+rToken+"&token_type_hint=refresh_token";
+            PostRequest pr = new PostRequest(new AsyncResponse() {
+                @Override
+                public void processFinish(Object output) {
+                }
+            });
+            pr.execute("https://www.reddit.com/api/v1/revoke_token", body, "Custom", "Bearer "+credentials);
+            PostRequest pr2 = new PostRequest(new AsyncResponse() {
+                @Override
+                public void processFinish(Object output) {
+                }
+            });
+            pr2.execute("https://www.reddit.com/api/v1/revoke_token", body, "Custom", "Bearer "+credentials);
+        }catch(UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void vote(String id, int vote){
+        String body = "id="+id+"&dir="+vote;
+        PostRequest pr = new PostRequest(new AsyncResponse() {
+            @Override
+            public void processFinish(Object output) {
+
+            }
+        });
+        Context context = MainActivity.getContext();
+        final SharedPreferences sharedPreferences = context.getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+        String auth = sharedPreferences.getString("access_token","");
+        pr.execute(callBaseURL+"/api/vote", body, "Bearer", auth);
+    }
+
+    public static void save(String id, String category){
+        String body = "id="+id+"&category="+category;
+        PostRequest pr = new PostRequest(new AsyncResponse() {
+            @Override
+            public void processFinish(Object output) {
+
+            }
+        });
+        Context context = MainActivity.getContext();
+        final SharedPreferences sharedPreferences = context.getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+        String auth = sharedPreferences.getString("access_token","");
+        pr.execute(callBaseURL+"/api/save", body, "Bearer", auth);
+    }
+
+    public static void unsave(String id){
+        String body = "id="+id;
+        PostRequest pr = new PostRequest(new AsyncResponse() {
+            @Override
+            public void processFinish(Object output) {
+
+            }
+        });
+        Context context = MainActivity.getContext();
+        final SharedPreferences sharedPreferences = context.getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+        String auth = sharedPreferences.getString("access_token","");
+        pr.execute(callBaseURL+"/api/unsave", body, "Bearer", auth);
     }
 }

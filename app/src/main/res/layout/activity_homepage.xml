@@ -18,7 +18,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorBackground"
+            android:background="@android:color/transparent"
             android:elevation="0dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:title="">
@@ -100,6 +100,8 @@
             android:paddingHorizontal="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:divider="@color/colorBackgroundDark"
+            android:dividerHeight="0px"
             android:id="@+id/postList">
         </ListView>
 

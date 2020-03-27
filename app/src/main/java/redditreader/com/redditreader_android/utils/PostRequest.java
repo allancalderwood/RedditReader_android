@@ -43,6 +43,8 @@ public class PostRequest extends AsyncTask<String, String, String[]>{
                 connection.setRequestProperty("Authorization","Basic "+CREDENTIALS);
             }else if(params[2].equals("Bearer")){
                 connection.setRequestProperty("Authorization","Bearer "+params[3]);
+            }else if(params[2].equals("Custom")){
+                connection.setRequestProperty("Authorization", params[3]);
             }
             connection.addRequestProperty("User-Agent", USER_AGENT);
             connection.addRequestProperty("Content-Type", TYPE);

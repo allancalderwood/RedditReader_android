@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import redditreader.com.redditreader_android.models.Post;
 
+import static redditreader.com.redditreader_android.utils.TimestampHelper.readTimestamp;
+
 public class PostFactory {
 
     public static void postFact(JSONObject jsonData, ArrayList<Post> posts){
@@ -15,7 +17,7 @@ public class PostFactory {
             JSONArray arr = jsonData.getJSONObject("data").getJSONArray("children");
             for(int i=0; i<arr.length();i++){
                 JSONObject p = arr.getJSONObject(i).getJSONObject("data");
-                String time = "TEST";
+                String time = readTimestamp(p.getInt("created_utc"));
                 Post post;
                 if(!(p.has("preview"))){
                     post = new Post(p.getString("name"),p.getString("author_fullname"), p.getString("author"),

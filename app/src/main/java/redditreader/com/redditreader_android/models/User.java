@@ -3,16 +3,26 @@ package redditreader.com.redditreader_android.models;
 import android.content.SharedPreferences;
 
 import redditreader.com.redditreader_android.MainActivity;
+import redditreader.com.redditreader_android.utils.RedditAPI;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class User {
+    static private String token = "";
     static private String username = "Username";
     static private String profileURL = "https://www.redditstatic.com/avatars/avatar_default_03_FFB000.png";
     static private int karma = 0;
     static private int accountAge = 1;
     static private String accountAgePostfix = " day";
     static private boolean updated = false;
+
+    public static String getToken() {
+        return token;
+    }
+
+    public static void setToken(String token) {
+        User.token = token;
+    }
 
     public static boolean isUpdated() {
         return updated;
@@ -64,6 +74,7 @@ public class User {
 
     public static void retrieveUser(){
         final SharedPreferences sharedPreferences = MainActivity.getContext().getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+        token = sharedPreferences.getString("access_token","");
         username = sharedPreferences.getString("username","Username");
         karma = sharedPreferences.getInt("karma",0);
         accountAge = sharedPreferences.getInt("accountAge",1);
@@ -79,5 +90,19 @@ public class User {
         sharedPreferences.edit().putInt("accountAge",accountAge).apply();
         sharedPreferences.edit().putString("accountAgePostfix",accountAgePostfix).apply();
         sharedPreferences.edit().putString("profileURL", profileURL).apply();
+    }
+
+    public static void logOut(){
+        token="";
+        username = "Username";
+        profileURL = "https://www.redditstatic.com/avatars/avatar_default_03_FFB000.png";
+        profileURL = "";
+        karma = 0;
+        accountAge = 1;
+        accountAgePostfix = " days old";
+        updated = false;
+        final SharedPreferences sharedPreferences = MainActivity.getContext().getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+        RedditAPI.logOutUser();
     }
 }
