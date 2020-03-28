@@ -7,4 +7,5 @@
     <color name="colorContrastLight">#cfcfcf</color>
     <color name="colorAccent">#272727</color>
     <color name="colorContrast">#FFFFFF</color>
+    <color name="colorAwards">#deab12</color>
 </resources>

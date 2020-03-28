@@ -31,6 +31,7 @@ import redditreader.com.redditreader_android.models.Post;
 import redditreader.com.redditreader_android.models.User;
 import redditreader.com.redditreader_android.screens.HomepageActivity;
 import redditreader.com.redditreader_android.screens.ProfileActivity;
+import redditreader.com.redditreader_android.screens.SubredditActivity;
 import redditreader.com.redditreader_android.utils.AsyncResponse;
 import redditreader.com.redditreader_android.utils.GetRequest;
 import redditreader.com.redditreader_android.utils.RedditAPI;
@@ -46,6 +47,7 @@ public class PostListAdapter extends ArrayAdapter<Post> {
     private static class ViewHolder{
         private TextView title;
         private Chip subreddit;
+        private Chip awards;
         private Chip time;
         private ImageView image;
         private TextView selftext;
@@ -74,8 +76,9 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         final String id = getItem(position).getId();
         String title = getItem(position).getTitle();
         String selftext = getItem(position).getSelftext();
-        String subreddit = getItem(position).getSubreddit();
+        final String subreddit = getItem(position).getSubreddit();
         String time = getItem(position).getTime();
+        int numAwards = getItem(position).getNumAwards();
         String imgUrl = getItem(position).getImageURL();
         String previewUrl = getItem(position).getImageURLPreview();
         final int karma = getItem(position).getScore();
@@ -93,6 +96,7 @@ public class PostListAdapter extends ArrayAdapter<Post> {
             holder.selftext = convertView.findViewById(R.id.selftext);
             holder.image = convertView.findViewById(R.id.image);
             holder.karma = convertView.findViewById(R.id.karma);
+            holder.awards = convertView.findViewById(R.id.awards);
             holder.comments = convertView.findViewById(R.id.comments);
             holder.author = convertView.findViewById(R.id.author);
             holder.upvote = convertView.findViewById(R.id.upvote);
@@ -108,6 +112,20 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         lastPosition = position;
         holder.title.setText(title);
         holder.subreddit.setText(subreddit);
+        holder.subreddit.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(context, SubredditActivity.class);
+                intent.putExtra("subreddit", subreddit);
+                context.startActivity(intent);
+            }
+        });
+
+        if(numAwards>=1){
+            holder.awards.setChipBackgroundColorResource(R.color.colorAwards);
+            holder.awards.setText(Integer.toString(numAwards));
+            holder.awards.setVisibility(View.VISIBLE);
+        }
         holder.time.setText(time);
         if(!( previewUrl.equals("self") || previewUrl.equals("spoiler") )){
             Picasso.with(context).load(imgUrl).into(holder.image);

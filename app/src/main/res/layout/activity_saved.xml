@@ -35,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center"
             android:layout_marginBottom="30dp"
             android:paddingHorizontal="30dp">
 
@@ -43,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
                 android:backgroundTint="@color/colorBackground"
-                android:text="Saved Posts"
+                android:text="Your Saved Posts"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="35dp" />

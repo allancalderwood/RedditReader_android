@@ -24,15 +24,28 @@
                 android:layout_gravity="fill_horizontal"
                 android:orientation="horizontal">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/subreddit"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_width="wrap_content"
+                <LinearLayout
                     android:layout_alignParentStart="true"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/subreddit"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"/>
+                    <com.google.android.material.chip.Chip
+                        android:visibility="gone"
+                        android:id="@+id/awards"
+                        app:chipIcon="@drawable/ic_awards"
+                        android:text="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/time"
+                    app:chipIcon="@drawable/ic_time"
                     android:layout_alignParentEnd="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
