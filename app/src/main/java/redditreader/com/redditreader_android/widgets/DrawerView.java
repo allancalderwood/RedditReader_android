@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import redditreader.com.redditreader_android.MainActivity;
 import redditreader.com.redditreader_android.R;
 import redditreader.com.redditreader_android.models.User;
+import redditreader.com.redditreader_android.screens.MySubredditsActivity;
 import redditreader.com.redditreader_android.screens.ProfileActivity;
 import redditreader.com.redditreader_android.screens.SavedActivity;
 import redditreader.com.redditreader_android.utils.AsyncResponse;
@@ -89,7 +90,8 @@ public class DrawerView {
         drawerView.getMenu().getItem(1).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                System.out.println("VIEW SUBS!!!!!!!!!!!!!!!!!");
+                Intent intent = new Intent(context, MySubredditsActivity.class);
+                context.startActivity(intent);
                 return true;
             }
         });

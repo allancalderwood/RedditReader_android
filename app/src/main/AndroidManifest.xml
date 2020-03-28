@@ -25,6 +25,9 @@
         <activity android:name=".screens.HomepageActivity" />
         <activity android:name=".screens.SubredditActivity" />
         <activity android:name=".screens.SavedActivity" />
+        <activity android:name=".screens.SearchActivity" />
+        <activity android:name=".screens.SearchSubredditActivity" />
+        <activity android:name=".screens.MySubredditsActivity" />
     </application>
 
 </manifest>

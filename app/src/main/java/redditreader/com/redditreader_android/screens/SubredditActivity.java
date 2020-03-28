@@ -1,6 +1,7 @@
 package redditreader.com.redditreader_android.screens;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -8,8 +9,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,6 +30,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.chip.Chip;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -39,6 +43,7 @@ import java.util.ArrayList;
 import redditreader.com.redditreader_android.MainActivity;
 import redditreader.com.redditreader_android.R;
 import redditreader.com.redditreader_android.models.Post;
+import redditreader.com.redditreader_android.models.Subreddit;
 import redditreader.com.redditreader_android.utils.AsyncResponse;
 import redditreader.com.redditreader_android.utils.GetRequest;
 import redditreader.com.redditreader_android.utils.RedditAPI;
@@ -46,6 +51,7 @@ import redditreader.com.redditreader_android.widgets.DrawerView;
 import redditreader.com.redditreader_android.widgets.PostListAdapter;
 
 import static redditreader.com.redditreader_android.utils.PostFactory.postFact;
+import static redditreader.com.redditreader_android.utils.SubFactory.subFact;
 
 public class SubredditActivity extends AppCompatActivity {
     private  String subreddit;
@@ -53,8 +59,10 @@ public class SubredditActivity extends AppCompatActivity {
     NavigationView drawerView;
     private TextView subredditText;
     private ImageView subIcon;
+    private Chip subscribeChip;
     private LinearLayout subHeader;
     private Spinner filter;
+    private boolean subbed = false;
     EditText searchText;
     ListView postList;
     ProgressBar progressBar;
@@ -85,10 +93,25 @@ public class SubredditActivity extends AppCompatActivity {
         filter = findViewById(R.id.filter);
         subredditText = findViewById(R.id.subredditText);
         subIcon = findViewById(R.id.subIcon);
+        subscribeChip = findViewById(R.id.subscribed);
         subHeader = findViewById(R.id.subHeader);
         postList = findViewById(R.id.postList);
         progressBar = findViewById(R.id.loadingProgress);
         searchText = findViewById(R.id.searchText);
+
+        searchText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    Intent intent = new Intent(getApplicationContext(), SearchSubredditActivity.class);
+                    intent.putExtra("query", searchText.getText().toString());
+                    intent.putExtra("subreddit", subreddit);
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         subredditText.setText("R/"+subreddit);
         String[] filters = new String[]{"Hot","Top","New"};
@@ -102,12 +125,31 @@ public class SubredditActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+            }
+        });
+        subscribeChip.setBackgroundColor(Color.LTGRAY);
+        subscribeChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(subbed){
+                    subbed=false;
+                    RedditAPI.subscribe(subreddit, "unsub");
+                    subscribeChip.setText("Subscribe");
+                    subscribeChip.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                }else{
+                    subbed=true;
+                    RedditAPI.subscribe(subreddit, "sub");
+                    subscribeChip.setText("Unsubscribe");
+                    subscribeChip.setBackgroundColor(Color.LTGRAY);
+                }
             }
         });
 
+
+
         loadSub();
         loadSubPosts();
+        checkSub();
         searchText.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -244,6 +286,39 @@ public class SubredditActivity extends AppCompatActivity {
         });
         String auth = getApplicationContext().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE).getString("access_token","");
         gr.execute(RedditAPI.getCallBaseURL()+"/r/"+subreddit+".json?limit=200", "Bearer", auth);
+    }
+
+    private void checkSub(){
+        GetRequest gr = new GetRequest(new AsyncResponse() {
+            @Override
+            public void processFinish(Object output) {
+                String[] response = (String[]) output;
+                try{
+                    ArrayList<Subreddit> subs = new ArrayList<>();
+                    JSONObject jo = new JSONObject( response[1] );
+                    if(jo.has("message")){
+                        if(jo.getString("message").equals("Unauthorized")){
+                            RedditAPI.refreshToken();
+                            loadSub();
+                        }
+                    }else {
+                        subFact(jo, subs);
+                        for (Subreddit s : subs) {
+                            if (s.getName().equals(subreddit)){
+                                subbed=true;
+                                subscribeChip.setText("Subscribed");
+                                subscribeChip.setBackgroundColor(Color.LTGRAY);
+                                break;
+                            }
+                        }
+                    }
+                }catch (Exception e){
+                    System.err.println(e.getLocalizedMessage());
+                }
+            }
+        });
+        String auth = getApplicationContext().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE).getString("access_token","");
+        gr.execute(RedditAPI.getCallBaseURL()+"/subreddits/mine/subscriber.json?limit=1000", "Bearer", auth);
     }
 
     @Override

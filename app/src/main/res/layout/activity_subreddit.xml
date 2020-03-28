@@ -95,6 +95,7 @@
                     android:layout_height="wrap_content"
                     android:spinnerMode="dropdown"/>
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/subscribed"
                     app:chipEndPadding="10dp"
                     app:chipStartPadding="10dp"
                     app:chipMinHeight="40dp"

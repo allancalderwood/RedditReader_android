@@ -194,6 +194,25 @@ public class RedditAPI {
         }
     }
 
+    public static void subscribe(String sr, String action){
+        String body;
+        if(action.equals("unsub")){
+            body = "action=unsub&sr_name="+sr;
+        }else{
+            body = "action=sub&skip_initial_defaults=true&sr_name="+sr;
+        }
+        PostRequest pr = new PostRequest(new AsyncResponse() {
+            @Override
+            public void processFinish(Object output) {
+
+            }
+        });
+        Context context = MainActivity.getContext();
+        final SharedPreferences sharedPreferences = context.getSharedPreferences(MainActivity.SHARED_PREFS, MODE_PRIVATE);
+        String auth = sharedPreferences.getString("access_token","");
+        pr.execute(callBaseURL+"/api/subscribe", body, "Bearer", auth);
+    }
+
     public static void vote(String id, int vote){
         String body = "id="+id+"&dir="+vote;
         PostRequest pr = new PostRequest(new AsyncResponse() {

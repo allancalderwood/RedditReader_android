@@ -1,9 +1,9 @@
 package redditreader.com.redditreader_android.models;
 
 public class Subreddit {
-    String name;
-    String iconURL;
-    String headerURL;
+    private String name;
+    private String iconURL;
+    private String headerURL;
 
     public Subreddit(String name, String iconURL, String headerURL) {
         this.name = name;
