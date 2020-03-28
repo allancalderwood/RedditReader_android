@@ -11,5 +11,7 @@
             android:title="My Subreddits"/>
         <item android:id="@+id/drawer_saved"
             android:title="My Saved Posts"/>
+        <item android:id="@+id/log_out"
+            android:title="Log Out"/>
     </group>
 </menu>

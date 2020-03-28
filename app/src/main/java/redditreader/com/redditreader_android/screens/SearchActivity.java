@@ -25,15 +25,18 @@ import redditreader.com.redditreader_android.MainActivity;
 import redditreader.com.redditreader_android.R;
 import redditreader.com.redditreader_android.models.Post;
 import redditreader.com.redditreader_android.models.Subreddit;
+import redditreader.com.redditreader_android.models.UserOther;
 import redditreader.com.redditreader_android.utils.AsyncResponse;
 import redditreader.com.redditreader_android.utils.GetRequest;
 import redditreader.com.redditreader_android.utils.RedditAPI;
 import redditreader.com.redditreader_android.widgets.DrawerView;
 import redditreader.com.redditreader_android.widgets.PostListAdapter;
 import redditreader.com.redditreader_android.widgets.SubListAdapter;
+import redditreader.com.redditreader_android.widgets.UserListAdapter;
 
 import static redditreader.com.redditreader_android.utils.PostFactory.postFact;
 import static redditreader.com.redditreader_android.utils.SubFactory.subFact;
+import static redditreader.com.redditreader_android.utils.UserFactory.userFact;
 
 public class SearchActivity extends AppCompatActivity {
     private DrawerLayout drawer;
@@ -190,7 +193,7 @@ public class SearchActivity extends AppCompatActivity {
             public void processFinish(Object output) {
                 String[] response = (String[]) output;
                 try{
-                    ArrayList<Post> posts = new ArrayList<>();
+                    ArrayList<UserOther> users = new ArrayList<>();
                     JSONObject jo = new JSONObject( response[1] );
                     if(jo.has("message")){
                         if(jo.getString("message").equals("Unauthorized")){
@@ -204,8 +207,8 @@ public class SearchActivity extends AppCompatActivity {
                             postList.setVisibility(View.VISIBLE);
                         }
                     }else {
-                        postFact(jo, posts);
-                        PostListAdapter adapter = new PostListAdapter(SearchActivity.this, R.layout.post_layout, posts);
+                        userFact(jo, users);
+                        UserListAdapter adapter = new UserListAdapter(SearchActivity.this, R.layout.user_layout, users);
                         postList.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
                         postList.setVisibility(View.VISIBLE);
@@ -216,7 +219,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
         String auth = getApplicationContext().getSharedPreferences(MainActivity.SHARED_PREFS, Context.MODE_PRIVATE).getString("access_token","");
-        gr.execute(RedditAPI.getCallBaseURL()+"/search.json?limit=100&q="+query+"&type=link", "Bearer", auth);
+        gr.execute(RedditAPI.getCallBaseURL()+"/search.json?limit=100&q="+query+"&type=user", "Bearer", auth);
     }
 
 

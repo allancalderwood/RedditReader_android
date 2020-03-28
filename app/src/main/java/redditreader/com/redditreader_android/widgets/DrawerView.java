@@ -15,12 +15,15 @@ import org.json.JSONObject;
 import redditreader.com.redditreader_android.MainActivity;
 import redditreader.com.redditreader_android.R;
 import redditreader.com.redditreader_android.models.User;
+import redditreader.com.redditreader_android.screens.AuthActivity;
 import redditreader.com.redditreader_android.screens.MySubredditsActivity;
 import redditreader.com.redditreader_android.screens.ProfileActivity;
 import redditreader.com.redditreader_android.screens.SavedActivity;
 import redditreader.com.redditreader_android.utils.AsyncResponse;
 import redditreader.com.redditreader_android.utils.GetRequest;
 import redditreader.com.redditreader_android.utils.RedditAPI;
+
+import static androidx.core.app.NavUtils.navigateUpTo;
 
 public class DrawerView {
     static public void updateDrawer(NavigationView drawerView, Context c){
@@ -99,6 +102,15 @@ public class DrawerView {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent intent = new Intent(context, SavedActivity.class);
+                context.startActivity(intent);
+                return true;
+            }
+        });
+        drawerView.getMenu().getItem(3).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                RedditAPI.logOutUser();
+                Intent intent = new Intent(context.getApplicationContext(), AuthActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
                 return true;
             }
