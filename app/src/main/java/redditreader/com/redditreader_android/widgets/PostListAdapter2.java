@@ -20,7 +20,6 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.chip.Chip;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -28,8 +27,6 @@ import java.util.ArrayList;
 import redditreader.com.redditreader_android.MainActivity;
 import redditreader.com.redditreader_android.R;
 import redditreader.com.redditreader_android.models.Post;
-import redditreader.com.redditreader_android.models.User;
-import redditreader.com.redditreader_android.screens.HomepageActivity;
 import redditreader.com.redditreader_android.screens.PostActivity;
 import redditreader.com.redditreader_android.screens.ProfileActivity;
 import redditreader.com.redditreader_android.screens.SubredditActivity;
@@ -37,9 +34,7 @@ import redditreader.com.redditreader_android.utils.AsyncResponse;
 import redditreader.com.redditreader_android.utils.GetRequest;
 import redditreader.com.redditreader_android.utils.RedditAPI;
 
-import static redditreader.com.redditreader_android.utils.PostFactory.postFact;
-
-public class PostListAdapter extends ArrayAdapter<Post> {
+public class PostListAdapter2 extends ArrayAdapter<Post> {
     private static final String TAG = "CustomPostAdapter";
     private Context context;
     private int mResource;
@@ -65,7 +60,7 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         private boolean saved = false;
     }
 
-    public PostListAdapter(Context context, int resource, ArrayList<Post> posts){
+    public PostListAdapter2(Context context, int resource, ArrayList<Post> posts){
         super(context, resource, posts);
         this.context = context;
         this.mResource = resource;
@@ -131,12 +126,9 @@ public class PostListAdapter extends ArrayAdapter<Post> {
         if(!( previewUrl.equals("self") || previewUrl.equals("spoiler") )){
             Picasso.with(context).load(imgUrl).into(holder.image);
             holder.image.setVisibility(View.VISIBLE);
+            holder.selftext.setText(selftext);
         }else{
-            if(selftext.length()>=200){
-                holder.selftext.setText(selftext.substring(0,200)+"...");
-            }else{
-                holder.selftext.setText(selftext);
-            }
+            holder.selftext.setText(selftext);
             holder.image.setVisibility(View.GONE);
         }
         holder.karma.setText(karma+" pts");

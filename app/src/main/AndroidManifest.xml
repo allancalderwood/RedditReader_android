@@ -28,6 +28,7 @@
         <activity android:name=".screens.SearchActivity" />
         <activity android:name=".screens.SearchSubredditActivity" />
         <activity android:name=".screens.MySubredditsActivity" />
+        <activity android:name=".screens.PostActivity" />
     </application>
 
 </manifest>
